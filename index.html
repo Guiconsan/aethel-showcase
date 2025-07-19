@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHEL - El Tiempo, Perfeccionado</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@700&display=swap');
+
+        :root {
+            --color-black-abyss: #050505;
+            --color-charcoal-grey: #1a1a1a;
+            --color-pale-gold: #D4AF37;
+            --color-reading-grey: #EAEAEA;
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-black-abyss);
+            color: var(--color-reading-grey);
+            font-family: var(--font-body);
+            cursor: none;
+        }
+
+        /* --- Estilos del Encabezado del Sitio --- */
+        .site-header {
+            position: fixed;
+            top: 2rem;
+            left: 2.5rem;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            color: var(--color-pale-gold);
+        }
+
+        .site-header .monogram {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .site-header .separator {
+            margin: 0 0.75rem;
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.5;
+        }
+
+        .site-header .wordmark {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            letter-spacing: 0.2em; /* Tracking aumentado */
+            text-transform: uppercase;
+        }
+
+        /* Estilos del Cursor Personalizado */
+        .cursor-dot, .cursor-dot-outline {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--color-pale-gold);
+        }
+
+        .cursor-dot-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            transition: width 0.3s ease-in-out, height 0.3s ease-in-out, border-color 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        
+        .cursor-hovered .cursor-dot-outline {
+            width: 60px;
+            height: 60px;
+            border-color: rgba(212, 175, 55, 1);
+        }
+        
+        a, button, .watch-card, .modal-close, .portal-container, .site-header {
+            cursor: none;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 0;
+        }
+
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero__video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            filter: brightness(0.4);
+        }
+
+        .hero__title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            color: white;
+            text-align: center;
+        }
+
+        .craftsmanship {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .craftsmanship__text h2,
+        .collection h2 {
+            font-family: var(--font-display);
+            color: var(--color-pale-gold);
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            margin-bottom: 1.5rem;
+        }
+
+        .craftsmanship__text p {
+            font-size: 1rem;
+            line-height: 1.8;
+            max-width: 500px;
+        }
+        
+        .craftsmanship__image-wrapper {
+            overflow: hidden;
+        }
+        
+        .craftsmanship__image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .collection {
+            text-align: center;
+            background-color: var(--color-charcoal-grey);
+            padding: 100px 0;
+        }
+        
+        .collection__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .watch-card {
+            background-color: var(--color-black-abyss);
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .watch-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+        }
+
+        .watch-card__image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 1.5rem;
+        }
+
+        .watch-card__name, .modal-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--color-pale-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .watch-card__desc, .modal-text {
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+        
+        .cta { text-align: center; }
+        
+        .cta__button {
+            font-family: var(--font-display);
+            background-color: transparent;
+            border: 2px solid var(--color-pale-gold);
+            color: var(--color-pale-gold);
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.4s ease-in-out;
+            z-index: 1;
+        }
+
+        .cta__button::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--color-pale-gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease-in-out;
+            z-index: -1;
+        }
+
+        .cta__button:hover { color: var(--color-black-abyss); }
+        .cta__button:hover::before { transform: scaleX(1); }
+
+        .footer {
+            padding: 40px 0;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            text-align: center;
+        }
+
+        .footer p {
+            font-size: 0.8rem;
+            color: rgba(234, 234, 234, 0.5);
+            font-weight: 300;
+            margin-top: 2rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center; justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background-color: var(--color-charcoal-grey);
+            padding: 3rem 4rem;
+            border-top: 4px solid var(--color-pale-gold);
+            max-width: 550px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.4s ease;
+        }
+        
+        .modal-overlay.active .modal-content { transform: scale(1); }
+
+        .modal-title { font-size: 2.25rem; margin-bottom: 1rem; }
+        .modal-text {
+            color: var(--color-reading-grey);
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+        
+        .modal-cta {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--color-black-abyss);
+            background-color: var(--color-pale-gold);
+            padding: 0.8rem 1.5rem;
+            font-family: var(--font-body);
+            font-weight: 500;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .modal-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .modal-cta svg {
+            margin-right: 10px;
+            fill: var(--color-black-abyss);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px; right: 20px;
+            font-size: 2.5rem;
+            line-height: 1;
+            color: var(--color-reading-grey);
+            background: none; border: none;
+            transition: transform 0.2s ease;
+        }
+        .modal-close:hover { transform: scale(1.1) rotate(90deg); }
+
+        .fade-in { opacity: 0; transform: translateY(30px); }
+
+        /* --- Estilos de la Firma Animada --- */
+        .portal-container {
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        #portal-logo-svg {
+            width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        .letra-panteon {
+            fill: var(--color-reading-grey);
+            opacity: 0;
+        }
+        
+        #portal-o-path {
+            fill: none;
+            stroke: var(--color-reading-grey);
+            stroke-width: 8;
+        }
+
+        #particula-luz {
+            fill: var(--color-pale-gold);
+            stroke: var(--color-pale-gold);
+            filter: drop-shadow(0 0 4px var(--color-pale-gold));
+        }
+        
+        #portal-glow {
+            fill: var(--color-pale-gold);
+            filter: blur(5px);
+            opacity: 0;
+            transform-origin: center center;
+        }
+
+        /* --- Media Queries para Responsividad --- */
+        @media (max-width: 768px) {
+            .site-header {
+                top: 1.5rem;
+                left: 1.5rem;
+            }
+            .site-header .monogram {
+                font-size: 1.2rem;
+            }
+            .site-header .separator {
+                margin: 0 0.5rem;
+            }
+            .site-header .wordmark {
+                font-size: 1rem;
+            }
+            .craftsmanship {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="site-header">
+        <span class="monogram">Æ</span>
+        <span class="separator">|</span>
+        <span class="wordmark">Aethel</span>
+    </div>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-dot-outline"></div>
+
+    <header class="hero">
+        <video class="hero__video" src="videos/aethel-hero-video.mp4" autoplay loop muted playsinline></video>
+        <h1 class="hero__title fade-in">AETHEL<br>El Tiempo, Perfeccionado.</h1>
+    </header>
+
+    <main>
+        <section class="craftsmanship container">
+            <div class="craftsmanship__text fade-in">
+                <h2>El Arte de la Precisión</h2>
+                <p>Para el maestro relojero de AETHEL, la precisión no es ingeniería; es su legado. Una forma de arte donde cada componente es una pincelada sobre el lienzo del tiempo, y cada tic-tac, el eco de una tradición. En sus manos, no se ensambla un mecanismo, se le infunde un alma.</p>
+                <p style="margin-top: 1rem;">Por eso, un AETHEL no se limita a medir sus horas: las contiene. Custodia el tiempo de su creador, a la espera de unirse a su historia y convertirse en el patrimonio de la siguiente generación.</p>
+                <p style="margin-top: 1rem; font-style: italic; color: var(--color-pale-gold);">Un instante eterno, ceñido a su muñeca.</p>
+            </div>
+            <div class="craftsmanship__image-wrapper fade-in">
+                <img src="images/mecanismo-macro.webp" alt="Vista macro de un mecanismo de reloj AETHEL" class="craftsmanship__image">
+            </div>
+        </section>
+
+        <section class="collection">
+            <div class="container">
+                <h2 class="fade-in">Nuestra Colección</h2>
+                <div class="collection__grid">
+                    <div class="watch-card fade-in">
+                        <img src="images/coleccion-origin.webp" alt="Reloj AETHEL The Origin" class="watch-card__image">
+                        <h3 class="watch-card__name">The Origin</h3>
+                        <p class="watch-card__desc">Un homenaje a los pioneros.</p>
+                    </div>
+                    <div class="watch-card fade-in">
+                        <img src="images/coleccion-navigator.webp" alt="Reloj AETHEL The Navigator" class="watch-card__image">
+                        <h3 class="watch-card__name">The Navigator</h3>
+                        <p class="watch-card__desc">Precisión para el explorador moderno.</p>
+                    </div>
+                    <div class="watch-card fade-in">
+                        <img src="images/coleccion-aethel.webp" alt="El reloj insignia AETHEL" class="watch-card__image">
+                        <h3 class="watch-card__name">The Aethel</h3>
+                        <p class="watch-card__desc">La máxima expresión de nuestra firma.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta container">
+            <button id="cta-button" class="cta__button fade-in">Contratar a El Panteón</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="portal-container" id="portal">
+            <svg id="portal-logo-svg" viewBox="0 0 520 80">
+                <defs>
+                    <path id="n-path" d="M0,70 v-70 l40,70 v-70" stroke-width="12"/>
+                </defs>
+                <path id="portal-glow" d="M 333, 11 A 33 33 0 0 1 333 79" />
+                <g id="wordmark">
+                    <path class="letra-panteon" d="M20,0 h20 v25 a15,15 0 1,0 0,-25 z M40,60 v-40 h-20 v40 z" transform="translate(0, 10)"/>
+                    <path class="letra-panteon" d="M80,70 l20,-70 l20,70 h-12 l-8,-25 l-8,25 z" />
+                    <use href="#n-path" class="letra-panteon" x="140" y="0" stroke="var(--color-reading-grey)" fill="none"/>
+                    <path class="letra-panteon" d="M200,0 h40 v70 h-15 v-60 h-10 v60 h-15 z" />
+                    <path class="letra-panteon" d="M260,0 h40 v10 h-40 v20 h30 v10 h-30 v20 h40 v10 h-40 z" />
+                    <path id="portal-o-path" class="letra-panteon" d="M 363, 40 A 30 30 0 1 1 303, 40 A 30 30 0 1 1 363, 40" transform="rotate(25, 333, 40)"/>
+                    <use href="#n-path" class="letra-panteon" x="385" y="0" stroke="var(--color-reading-grey)" fill="none"/>
+                </g>
+                <circle id="particula-luz" r="5" cx="0" cy="0" visibility="hidden"/>
+            </svg>
+        </div>
+        <p>© 2025 El Panteón. Todos los derechos reservados. | AETHEL es una marca registrada de El Panteón.</p>
+    </footer>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="modal-close-btn" class="modal-close">&times;</button>
+            <h3 class="modal-title">Iniciar una Colaboración</h3>
+            <p class="modal-text">Nuestra pasión es construir experiencias digitales que perduren. Contáctenos para dar vida a su próximo proyecto de élite.</p>
+            <a href="mailto:guiconsan@gmail.com" class="modal-cta">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm21.518 2l-9.518 7.713-9.518-7.713h19.036zm-19.518 14v-11.817l10 8.104 10-8.104v11.817h-20z"/></svg>
+                <span>guiconsan@gmail.com</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+
+            // --- Lógica del Cursor Perfeccionada (v2.1) ---
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-dot-outline');
+            // ACTUALIZACIÓN: Añadido '.site-header' a los elementos interactivos
+            const interactiveElements = document.querySelectorAll('a, button, .watch-card, .modal-close, .portal-container, .site-header');
+
+            const mousePos = { x: -100, y: -100 };
+            const pos = { x: -100, y: -100 };
+            const speed = 0.15; 
+
+            window.addEventListener('mousemove', e => {
+                mousePos.x = e.clientX;
+                mousePos.y = e.clientY;
+            });
+
+            const xSet = gsap.quickSetter(cursorOutline, "x", "px");
+            const ySet = gsap.quickSetter(cursorOutline, "y", "px");
+
+            gsap.ticker.add(() => {
+                const dt = 1.0 - Math.pow(1.0 - speed, gsap.ticker.deltaRatio());
+                pos.x += (mousePos.x - pos.x) * dt;
+                pos.y += (mousePos.y - pos.y) * dt;
+                xSet(pos.x);
+                ySet(pos.y);
+            });
+            
+            gsap.quickSetter(cursorDot, "x", "px");
+            gsap.quickSetter(cursorDot, "y", "px");
+            window.addEventListener('mousemove', e => {
+                gsap.set(cursorDot, { x: e.clientX, y: e.clientY });
+            });
+
+            const setCursorVisible = (visible) => {
+                gsap.to([cursorDot, cursorOutline], {
+                    opacity: visible ? 1 : 0,
+                    duration: 0.3,
+                    ease: 'power3.out'
+                });
+            };
+
+            document.body.addEventListener('mouseenter', () => setCursorVisible(true));
+            document.body.addEventListener('mouseleave', () => setCursorVisible(false));
+
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => cursorOutline.classList.add('cursor-hovered'));
+                el.addEventListener('mouseleave', () => cursorOutline.classList.remove('cursor-hovered'));
+            });
+
+            // --- Animaciones de Scroll ---
+            const fadeInElements = document.querySelectorAll('.fade-in');
+            fadeInElements.forEach(el => {
+                gsap.fromTo(el, 
+                    { opacity: 0, y: 50 }, 
+                    {
+                        opacity: 1, y: 0, duration: 1.2, ease: 'power3.out',
+                        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+                    }
+                );
+            });
+            
+            gsap.to('.craftsmanship__image', {
+                yPercent: -15,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '.craftsmanship',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: true
+                }
+            });
+
+            // --- Lógica del Modal ---
+            const ctaButton = document.getElementById('cta-button');
+            const modal = document.getElementById('modal');
+            const closeModalBtn = document.getElementById('modal-close-btn');
+            const modalElements = ['.modal-title', '.modal-text', '.modal-cta'];
+
+            const openModal = () => {
+                modal.classList.add('active');
+                gsap.fromTo(modalElements, 
+                    { opacity: 0, y: 20 }, 
+                    { opacity: 1, y: 0, duration: 0.6, stagger: 0.2, delay: 0.3, ease: 'power3.out' }
+                );
+            };
+
+            const closeModal = () => {
+                modal.classList.remove('active');
+                gsap.set(modalElements, { opacity: 0, y: 20 });
+            };
+
+            ctaButton.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            // --- Lógica de la Firma Animada ---
+            const portalContainer = '#portal';
+            const letras = '.letra-panteon:not(#portal-o-path)';
+            const portalPath = '#portal-o-path';
+            const particula = '#particula-luz';
+            const glow = '#portal-glow';
+            
+            const tl = gsap.timeline({ defaults: { ease: "power2.out" }});
+
+            tl.to(letras, { duration: 1.5, opacity: 1, stagger: 0.1 });
+            
+            tl.set(particula, { visibility: 'visible' })
+              .to(particula, {
+                  duration: 2,
+                  ease: "power1.inOut",
+                  motionPath: {
+                      path: portalPath,
+                      align: portalPath,
+                      alignOrigin: [0.5, 0.5],
+                      autoRotate: true
+                  }
+              }, ">-0.5")
+              .to(portalPath, { opacity: 1, duration: 0.1 }, "<")
+              .to(particula, { scale: 3, opacity: 0, duration: 0.5 }, ">-0.2");
+
+            const hoverAnimation = gsap.timeline({ paused: true });
+            
+            hoverAnimation.to(glow, {
+                opacity: 0.8,
+                scale: 1.2,
+                duration: 0.5,
+                ease: 'power3.out'
+            });
+
+            document.querySelector(portalContainer).addEventListener('mouseenter', () => {
+                hoverAnimation.play();
+            });
+
+            document.querySelector(portalContainer).addEventListener('mouseleave', () => {
+                hoverAnimation.reverse();
+            });
+        });
+    </script>
+</body>
+</html>
